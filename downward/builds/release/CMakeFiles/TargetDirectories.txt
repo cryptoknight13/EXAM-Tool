@@ -1,0 +1,6 @@
+/Users/rakeshpodder/Documents/downward/builds/release/CMakeFiles/translate.dir
+/Users/rakeshpodder/Documents/downward/builds/release/CMakeFiles/edit_cache.dir
+/Users/rakeshpodder/Documents/downward/builds/release/CMakeFiles/rebuild_cache.dir
+/Users/rakeshpodder/Documents/downward/builds/release/search/CMakeFiles/downward.dir
+/Users/rakeshpodder/Documents/downward/builds/release/search/CMakeFiles/edit_cache.dir
+/Users/rakeshpodder/Documents/downward/builds/release/search/CMakeFiles/rebuild_cache.dir

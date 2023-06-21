@@ -1,0 +1,175 @@
+Type-checking access-to-webserver
+...action passes type checking.
+Type-checking attacker-connected-to-web-server-exploits-cve-2015-1635
+...action passes type checking.
+Type-checking attacker-exploits-vulnerable-software-version
+...action passes type checking.
+Type-checking attacker-changes-server-configuration
+...action passes type checking.
+Type-checking attacker-gains-privileges-by-executing-malicious-file
+...action passes type checking.
+Type-checking attacker-execute-code-to-compromise-web-server
+...action passes type checking.
+Type-checking connected-to-web-server
+...action passes type checking.
+Type-checking access-to-database-server
+...action passes type checking.
+Type-checking attacker-moves-to-database-server-exploits-cve-2014-1466
+...action passes type checking.
+Type-checking attacker-connected-to-vulnerable-software-version
+...action passes type checking.
+Type-checking attacker-uploads-malicious-sql-code-to-software
+...action passes type checking.
+Type-checking attacker-opens-login-page-in-application-through-software
+...action passes type checking.
+Type-checking attacker-gains-access-to-login-field
+...action passes type checking.
+Type-checking attacker-executes-malicious-sql-code-in-login-field
+...action passes type checking.
+Type-checking attacker-compromises-database-server
+...action passes type checking.
+Type-checking connected-to-database-server
+...action passes type checking.
+Type-checking access-to-ftp-server
+...action passes type checking.
+Type-checking attacker-moves-to-ftp-server-to-exploit-cve-2013-4465
+...action passes type checking.
+Type-checking attacker-connected-to-software-to-access-avatar-functionality
+...action passes type checking.
+Type-checking attackers-uploads-malicious-file-in-avatar
+...action passes type checking.
+Type-checking attacker-has-authentication-access
+...action passes type checking.
+Type-checking attacker-uploads-executable-extention-in-unspecified-directory
+...action passes type checking.
+Type-checking attacker-accessing-execuatble-extention-via-direct-request
+...action passes type checking.
+Type-checking attacker-gets-privilige-to-execute-arbitrary-code-in-ftp-server
+...action passes type checking.
+Type-checking attacker-compromised-ftp-server
+...action passes type checking.
+Type-checking connected-to-ftp-server
+...action passes type checking.
+Type-checking access-to-admin-server
+...action passes type checking.
+Type-checking attacker-moves-to-admin-server-exploits-cve-2009-0241
+...action passes type checking.
+Type-checking attacker-connected-to-admin-server-software
+...action passes type checking.
+Type-checking attacker-gains-access-to-file-in-software
+...action passes type checking.
+Type-checking attacker-sends-request-to-file-to-initiate-dos-attack
+...action passes type checking.
+Type-checking attacker-compromised-admin-server
+...action passes type checking.
+Type-checking attacker-moves-to-admin-server-exploits-cve-2022-37835
+...action passes type checking.
+Type-checking attacker-exploits-vulnerable-software-version-in-admin-server
+...action passes type checking.
+Type-checking attacker-downloads-data-from-admin-server
+...action passes type checking.
+Type-checking attacker-compromised-admin-server-via-dns-server
+...action passes type checking.
+Type-checking access-to-dns-server
+...action passes type checking.
+Type-checking attacker-connected-to-dns-server-to-exploit-cve-2017-14491
+...action passes type checking.
+Type-checking attacker-connected-to-vulnerable-software
+...action passes type checking.
+Type-checking attacker-exploits-the-network-services
+...action passes type checking.
+Type-checking attacker-initiates-dos-attack
+...action passes type checking.
+Type-checking attacker-executes-arbitrary-code-via-crafted-dns-response
+...action passes type checking.
+Type-checking attacker-compromised-dns-server
+...action passes type checking.
+Checking plan: sas_plan
+;Plan to validate:
+
+Plan size: 13
+1:
+(access-to-webserver web-server-1 database-server-1 admin-server-1 ftp-server-1 dns-server-1 access_web_server internet)
+ 
+2:
+(attacker-connected-to-web-server-exploits-cve-2015-1635 web-server-1 attacker1 internet)
+ 
+3:
+(attacker-exploits-vulnerable-software-version web-server-1 microsoft-windows-8 windows-server-2012-gold attacker1 internet)
+ 
+4:
+(attacker-changes-server-configuration web-server-1 crafted-http-request microsoft-windows-8 http_sys attacker1)
+ 
+5:
+(attacker-gains-privileges-by-executing-malicious-file web-server-1 crafted-http-request arbitrary_code_web http_sys)
+ 
+6:
+(attacker-execute-code-to-compromise-web-server arbitrary_code_web web-server-1)
+ 
+7:
+(attacker-moves-to-database-server-exploits-cve-2014-1466 web-server-1 database-server-1 microsoft-windows-8 windows-server-2012-gold access_database)
+ 
+8:
+(attacker-connected-to-vulnerable-software-version database-server-1 cpsmysqlusermanager v2-3 sqlinjection attacker1 internet access_database)
+ 
+9:
+(attacker-uploads-malicious-sql-code-to-software database-server-1 cpsmysqlusermanager sqlinjection attacker1 internet)
+ 
+10:
+(attacker-opens-login-page-in-application-through-software cpsmysqlusermanager sqlinjection attacker1 login_page)
+ 
+11:
+(attacker-gains-access-to-login-field arbitrary_sql_commands database-server-1 login_page)
+ 
+12:
+(attacker-executes-malicious-sql-code-in-login-field arbitrary_sql_commands)
+ 
+13:
+(attacker-compromises-database-server database-server-1 arbitrary_sql_commands attacker1)
+ 
+
+Plan Validation details
+-----------------------
+
+Checking next happening (time 1)
+Adding (connected-to-web web-server-1)
+
+Checking next happening (time 2)
+Adding (access-to-web-server web-server-1 attacker1 internet)
+
+Checking next happening (time 3)
+Adding (access-to-web-software microsoft-windows-8 attacker1)
+
+Checking next happening (time 4)
+Adding (execute-file-in-config crafted-http-request http_sys)
+
+Checking next happening (time 5)
+Deleting (web-file crafted-http-request)
+Deleting (execute-file-in-config crafted-http-request http_sys)
+Deleting (configuration http_sys)
+Adding (execute-code web-server-1 arbitrary_code_web)
+
+Checking next happening (time 6)
+Adding (compromised-web-server web-server-1)
+
+Checking next happening (time 7)
+Deleting (web-software microsoft-windows-8)
+Deleting (web-version windows-server-2012-gold)
+Adding (move-to-database database-server-1)
+Adding (access-granted-to-db database-server-1 access_database)
+
+Checking next happening (time 8)
+Plan failed because of unsatisfied precondition in:
+(attacker-connected-to-vulnerable-software-version database-server-1 cpsmysqlusermanager v2-3 sqlinjection attacker1 internet access_database)
+
+
+Plan failed to execute
+
+Plan Repair Advice:
+
+(attacker-connected-to-vulnerable-software-version database-server-1 cpsmysqlusermanager v2-3 sqlinjection attacker1 internet access_database) has an unsatisfied precondition at time 8
+(Set (sql-version v2-3) to true)
+
+
+Failed plans:
+ sas_plan 

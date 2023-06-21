@@ -1,0 +1,4 @@
+
+TO GENERATE PLANS------
+
+./plan_topk.sh examples/Network/FinalNetworkDomain.pddl examples/Network/FinalNetworkProblem.pddl 10

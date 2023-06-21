@@ -1,0 +1,9 @@
+/Users/rakeshpodder/Documents/AI/Forbid/forbiditerative/builds/release/CMakeFiles/translate.dir
+/Users/rakeshpodder/Documents/AI/Forbid/forbiditerative/builds/release/CMakeFiles/edit_cache.dir
+/Users/rakeshpodder/Documents/AI/Forbid/forbiditerative/builds/release/CMakeFiles/rebuild_cache.dir
+/Users/rakeshpodder/Documents/AI/Forbid/forbiditerative/builds/release/search/CMakeFiles/downward.dir
+/Users/rakeshpodder/Documents/AI/Forbid/forbiditerative/builds/release/search/CMakeFiles/edit_cache.dir
+/Users/rakeshpodder/Documents/AI/Forbid/forbiditerative/builds/release/search/CMakeFiles/rebuild_cache.dir
+/Users/rakeshpodder/Documents/AI/Forbid/forbiditerative/builds/release/h2-preprocessor/CMakeFiles/preprocess.dir
+/Users/rakeshpodder/Documents/AI/Forbid/forbiditerative/builds/release/h2-preprocessor/CMakeFiles/edit_cache.dir
+/Users/rakeshpodder/Documents/AI/Forbid/forbiditerative/builds/release/h2-preprocessor/CMakeFiles/rebuild_cache.dir

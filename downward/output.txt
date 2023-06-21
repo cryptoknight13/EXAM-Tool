@@ -1,0 +1,13 @@
+1. Attacker has access to webserver web-server-1.
+2. The attacker connect to web-server-1 through internet to exploit vulnerability CVE-2015-1635.
+3. Attacker exploits vulnerable software microsoft-windows-8, version windows-server-2012-gold installed on web-server-1.
+4. Attacker executes malicious crafted-http-request on http_sys config file of software microsoft-windows-8 to chnage web-server-1 configuration.
+5. Attacker gains privileges to execute arbitrary_code_web on web-server-1.
+6. Attacker executes arbitrary_code_web in web-server-1 to compromise web-server-1.
+7. Attacker moves to database-server-1 once web-server-1 is compromised to exploit vulnerability CVE-2014-1466.
+8. Attacker exploits vulnerable software cpsmysqlusermanager, version v2-3 installed on database-server-1.
+9. Attacker do a sqlinjection on software cpsmysqlusermanager that is installed in database-server-1.
+10. Attacker gets access to login page of Database Server through software cpsmysqlusermanager.
+11. Attacker gain access to login-page of the login-field in database-server-1.
+12. Attacker executes malicious arbitrary_sql_commands in the login field of login page.
+13. Attacker executes arbitrary_sql_commands in database-server-1 to compromise database-server-1.
