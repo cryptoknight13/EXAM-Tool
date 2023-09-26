@@ -1,0 +1,2 @@
+changes >> {'putdown-has-add-effect-clear ?x'}
+changes >> {'unstack-has-add-effect-holding ?x', 'putdown-has-add-effect-clear ?x'}
