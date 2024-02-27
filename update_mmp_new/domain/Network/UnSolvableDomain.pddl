@@ -1,6 +1,6 @@
 ( define  (domain network_final)
 (:requirements :strips :typing)
-(:types webserver sqlserver ftpserver adminserver dnsserver software version file code connection config adversary accesstoken request location functionality buffer response attack function path pathname loginpage)
+(:types webserver sqlserver ftpserver adminserver dnsserver software version file code connection config adversary accesstoken request location functionality buffer response attack function path pathname loginpage admindata environment malserver daemon)
 (:predicates 
                                                               ;Common Predicates;
 
@@ -50,9 +50,21 @@
  (sql-version ?Version - version)
  (access-to-sql-server ?sql - sqlserver ?Attacker - adversary ?Internet - connection)
  (access-login-page-via-software ?Page - loginpage)
+                                                ;; Modelling another vulnerability for database;;;;;
+
+ (sql-env ?Env - environment)
+ (access-to-sql-server-2 ?sql - sqlserver ?Attacker - adversary)
+(sql-software-2 ?Software - software)
+ (sql-version-2 ?Version - version)
+ (access-to-sql-software-2 ?sql - sqlserver ?Software - software ?version - version ?Attacker - adversary)
+ (sql-malicious-server ?malserv - malserver)
+ (sql-daemon ?daemon - daemon)
+ (replace-daemond ?daemon - daemon ?malserv - malserver ?sql - sqlserver ?Attacker - adversary)
+ (sql-attack ?Attack - attack )
+ (execute-unauthorized-requests ?Env - environment ?Attack - attack ?sql - sqlserver ?Attacker - adversary)
  
                                                     ;;; Predicates for FTP Server
- (request ?Request - request)
+ (request-ftp ?Request - request)
  (exe-file ?File - file)
  (directory ?Directory - location)
  (has-upload-file ?File - file ?Attacker - adversary ?Functionality - functionality)
@@ -75,25 +87,33 @@
                                                     ;Predicates for Admin Server;
  (buffer-overflow ?Buffer - buffer)
  (move-to-admin ?server - adminserver)
- (function ?Function - function)
- (path ?Path - path)
+ (admin-function ?Function - function)
+ (admin-path ?Path - path)
  (admin-file ?file - file)
  (admin-server ?server - adminserver)
  (admin-software ?software - software)
  (admin-version ?version - version)
  (longpath ?Pathname - pathname)
  (access-to-admin-software ?Sofware - software ?Attacker - adversary)
- (attack ?Attack - attack)
+ (admin-attack ?Attack - attack)
  (connected-to-admin ?serv4 - adminserver)
  (dos-attack-execution ?Server - adminserver ?Attack - attack ?Attacker - adversary)
  (request-to-service ?File - file ?Path - path ?Function - function)
  (access-granted-to-admin ?server - adminserver ?Acc3 - accesstoken)
+   ;;; Admin via DNS;;;;
+(move-to-admin-via-dns ?admin - adminserver ?dns - dnsserver)
+(admin-software-2 ?software - software)
+(admin-version-2 ?version - version)
+(access-to-admin-software-2 ?Sofware - software ?Version - version ?Attacker - adversary)
+(information ?Data - admindata)
+(download-data ?Data - admindata ?Attacker - adversary)
  
                                                                     ;;Predicates for DNS Server
  (access-to-dns-software ?software - software ?Attacker - adversary)
  (access-to-dns-server ?server - dnsserver ?Attacker - adversary ?Internet - connection)
  (exploited ?software - software ?Buffer - buffer)
- (response ?Response - response)
+ (response-dns ?Response - response)
+ (dns-attack ?Attack - attack)
  (dos-attack-in-dns ?server - dnsserver ?Attack - attack)
  (connected-to-dns ?server - dnsserver)
  (execute-code-in-dns ?server - dnsserver ?Code - code)
@@ -188,7 +208,7 @@
     )
   )
  
-                                   ;;;;;;;;;; Actions for Database Server ;;;;;;;;;;;;;
+                                   ;;;;;;;;;; Actions for Database Server through CVE-2014-1466 ;;;;;;;;;;;;;
                                    
 (:action Access-to-Database-Server
     :parameters (?serv1 - webserver ?serv2 - sqlserver ?Access - accesstoken)
@@ -298,6 +318,46 @@
         (reach-to-db ?serv2)
     )
   )
+                                        ;;;;;;;;;; Database Server Action for CVE-2020-13295 ;;;;;;;;;
+
+(:action attacker-connected-to-database-server-to-exploits-CVE-2020-13295
+    :parameters (?web - webserver ?sql - sqlserver ?Attacker - adversary ?env - environment)
+    :precondition (and (compromised-web-server ?web) (sql-server ?sql) (attacker ?Attacker))
+    :effect (and
+        (access-to-sql-server-2 ?sql ?Attacker)
+    )
+)
+ (:action attacker-exploits-vulnerable-software-version-in-database-server
+    :parameters (?sql - sqlserver ?Attacker - adversary ?soft - software ?ver - version)
+    :precondition (and (access-to-sql-server-2 ?sql ?Attacker) (sql-software-2 ?soft)(sql-version-2 ?ver))
+    :effect (and
+        (access-to-sql-software-2 ?sql ?soft ?ver ?Attacker)
+    )
+)
+(:action attacker-replaces-daemond-with-malicious-server
+    :parameters (?sql - sqlserver ?Attacker - adversary ?soft - software ?ver - version ?malserv - malserver ?daemon - daemon)
+    :precondition (and (access-to-sql-software-2 ?sql ?soft ?ver ?Attacker)(sql-malicious-server ?malserv) (sql-daemon ?daemon))
+    :effect (and
+        (replace-daemond ?daemon ?malserv ?sql ?Attacker)
+    )
+)
+(:action attacker-performs-unauthorized-request-via-environment-using-SSRF-Vulnerability
+    :parameters (?sql - sqlserver ?Attacker - adversary ?malserv - malserver ?daemon - daemon ?env - environment ?Attack - attack)
+    :precondition (and (sql-env ?env) (replace-daemond ?daemon ?malserv ?sql ?Attacker) (sql-attack ?Attack))
+    :effect (and
+        (execute-unauthorized-requests ?env ?Attack ?sql ?Attacker)
+    )
+)
+ (:action attacker-compromises-Database-Server-using-SSRF
+    :parameters (?sql - sqlserver ?Attacker - adversary ?env - environment ?Attack - attack)
+    :precondition (and
+        (execute-unauthorized-requests ?env ?Attack ?sql ?Attacker)
+    )
+    :effect(and
+        (compromised-sql-server ?sql)
+    )
+ )
+                                                        ;;;;;; FTP Server Action ;;;;;;;
   (:action Access-to-FTP-Server
     :parameters (?serv1 - webserver ?serv3 - ftpserver ?Access - accesstoken)
     :precondition(and
@@ -389,7 +449,7 @@
         (exe-file ?f4)
         (directory ?Directory)
         (has-upload-exe-extension ?f4 ?Directory ?Attacker)
-        (request ?Request)
+        (request-ftp ?Request)
     )
     :effect (and
         (access-to-exe-file ?f4 ?Directory ?Request)
@@ -426,7 +486,7 @@
         (reach-to-ftp ?serv3)
     )
   )
-                            ;;;Actions for Admin Server
+                            ;;;Actions for Admin Server via WebServer;;;;;;
         
     (:action Access-to-Admin-Server
     :parameters (?serv1 - webserver ?serv4 - adminserver ?Access - accesstoken)
@@ -452,7 +512,6 @@
         (access-granted-to-admin ?serv4 ?Access)
     )
 )
-
 (:action attacker-connected-to-admin-server-software
     :parameters (?serv4 - adminserver ?s4 - software ?v4 - version ?Internet - connection ?Attacker - adversary ?Access - accesstoken)
     :precondition (and
@@ -475,8 +534,8 @@
         (access-to-admin-software ?s4 ?Attacker)
         (admin-file ?f5)
         (access-granted-to-admin ?serv4 ?Access)
-        (path ?Path)
-        (function ?Function)
+        (admin-path ?Path)
+        (admin-function ?Function)
     )
     :effect (and
         (request-to-service ?f5 ?Path ?Function)
@@ -488,7 +547,7 @@
         (longpath ?Pathname)
         (buffer-overflow ?Buffer)
         (request-to-service ?f5 ?Path ?Function)    
-        (attack ?Attack)
+        (admin-attack ?Attack)
     )
     :effect (and
         (dos-attack-execution ?serv4 ?Attack ?Attacker)
@@ -498,9 +557,51 @@
 (:action attacker-compromised-Admin-Server
     :parameters (?serv4 - adminserver ?Attacker - adversary ?Attack - attack)
     :precondition (and
-        (attack ?Attack)
-        (attacker ?Attacker)
         (dos-attack-execution ?serv4 ?Attack ?Attacker)
+    )
+    :effect (and 
+        (compromised-admin-server ?serv4)
+    )
+)
+
+
+                                                  ;;;;;;;;; Compromised Admin Server via DNS Server;;;;;
+
+    (:action attacker-moves-to-admin-server-exploits-CVE-2022-37835
+    :parameters (?serv5 - dnsserver ?serv4 - adminserver ?Access - accesstoken)
+    :precondition (and
+        (access-admin ?Access)
+        (compromised-dns-server ?serv5)
+    )
+    :effect (and
+        (move-to-admin-via-dns ?serv4 ?serv5)
+    )
+)
+(:action attacker-exploits-vulnerable-software-version-in-admin-server
+    :parameters (?serv4 - adminserver ?serv5 - dnsserver ?s4 - software ?v4 - version ?Internet - connection ?Attacker - adversary)
+    :precondition (and
+        (move-to-admin-via-dns ?serv4 ?serv5)
+        (admin-software-2 ?s4)
+        (admin-version-2 ?v4)
+    )
+    :effect (and
+        (access-to-admin-software-2 ?s4 ?v4 ?Attacker)
+        
+    )
+)
+(:action attacker-downloads-data-from-admin-server
+    :parameters (?s4 - software ?v4 - version ?admin - adminserver ?Attacker - adversary ?data - admindata)
+    :precondition (and 
+        (access-to-admin-software-2 ?s4 ?v4 ?Attacker)
+        (information ?data))
+    :effect (and
+       (download-data ?data ?Attacker)
+    )
+)
+(:action attacker-compromised-Admin-Server-via-DNS-Server
+    :parameters (?serv4 - adminserver ?serv5 - dnsserver ?Attacker - adversary ?data - admindata)
+    :precondition (and
+        (download-data ?data ?Attacker)
     )
     :effect (and 
         (compromised-admin-server ?serv4)
@@ -558,7 +659,7 @@
     :parameters (?serv5 - dnsserver ?s5 - software ?buffer - buffer ?Attack - attack)
     :precondition (and
             (exploited ?s5 ?buffer)
-            (attack ?Attack)
+            (dns-attack ?Attack)
             (dns-server ?serv5)
     )
     :effect (and
@@ -571,7 +672,7 @@
             (dos-attack-in-dns ?serv5 ?Attack)
             (exploited ?s5 ?buffer)
             (dns-Code ?c4)
-            (response ?Response)
+            (response-dns ?Response)
     )
     :effect (and
         (execute-code-in-dns ?serv5 ?c4)

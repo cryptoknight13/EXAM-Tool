@@ -63,10 +63,11 @@ def astarSearch(problem):
                 new_node           = [candidate_node[0], node[1] + [candidate_node[1]]]
                 
                 fringe.put((problem.heuristic(candidate_node[0]) + len(new_node[1]), new_node))
-        # if numberOfNodesExpanded == 10000:
-        #     break
+        if numberOfNodesExpanded == 10000:
+             break
     #return the plan list
     # return plan_list
+    print("Number of Nodes Expanded =", numberOfNodesExpanded)
     return None
 
 def BFSearch(problem):

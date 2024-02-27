@@ -26,7 +26,7 @@ class Problem:
 
     def __init__(self, robotModelFile, humanModelFile, robotProblemFile, domainTemplate,
                  ground_flag, approx_flag, heuristic_flag,
-                 problemTemplate, humanProblemFile=None, robotPlanFile=None):
+                 problemTemplate, humanProblemFile, robotPlanFile=None):
 
         print ("Setting up MMP...")
 
@@ -76,6 +76,7 @@ class Problem:
         #else:
         self.robot_state = read_state_from_domain_file(robotModelFile, robotProblemFile)
         self.human_state = read_state_from_domain_file(humanModelFile, humanProblemFile)
+        #temp_plan, temp_cost = get_plan(humanModelFile, humanProblemFile)
 
         #if self.approx_flag:
         #    if self.ground_flag:
@@ -97,6 +98,7 @@ class Problem:
         self.initialState = copy.copy(self.human_state)
         self.goalState = copy.copy(self.robot_state)
         plan = astarSearch(self)
+        #print(self.initialState)
         return plan
 
     def MCESearch(self):
@@ -120,7 +122,10 @@ class Problem:
         if is_superset_of_any_solution(set(state), self.previous_difference):
             return (False, [])
         temp_domain, temp_problem = write_domain_file_from_state(state, self.domainTemplate, self.problemTemplate)
-        # feasibility_flag = validate_plan(temp_domain, temp_problem, self.groundedRobotPlanFile)
+        #feasibility_flag = validate_plan(temp_domain, temp_problem, self.groundedRobotPlanFile)
+        #print(feasibility_flag)
+
+
         plan, cost       = get_plan(temp_domain, temp_problem)
         # optimality_flag  = cost == self.cost
         # TODO: Check plan is empty or not
@@ -224,6 +229,7 @@ class Problem:
             # # listOfSuccessors.append([list(new_state), item])
             # if not any(set(new_state).issuperset(s) for s in solution_list):
             #     listOfSuccessors.append([list(new_state), item])
+        #print(self.previous_difference)
         return listOfSuccessors
 
 

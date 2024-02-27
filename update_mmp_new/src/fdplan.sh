@@ -3,7 +3,6 @@
 # path to fast downward #
 # FD_PATH=$(locate fast-downward.py | head -n 1)
 
-# FD_PATH=/Users/sarathsreedharan/mycode/FastDownward/fast-downward.py
 FD_PATH=/Users/rakeshpodder/Documents/downward/fast-downward.py
 
 #/Users/rakeshpodder/Documents/downward/fast-downward.py

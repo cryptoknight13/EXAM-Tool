@@ -8,8 +8,6 @@ Date    ::
 
 SEARCH_OPTIONS = ["me", "mce"]
 
-# import argparse, sys
-# from Problem import Problem
 import argparse, sys
 import re
 import os
@@ -47,6 +45,7 @@ def main():
     parser.add_argument('-q', '--hproblem', type=str, help="Problem file for human.")
     parser.add_argument('-r', '--tproblem', type=str, help="Problem file template.", required=True)
     parser.add_argument('-f', '--plan_file',    type=str, help="Plan file.")
+    parser.add_argument('-l', '--label', type=str, help="Label for output files")
  
 
     if not sys.argv[1:] or '-h' in sys.argv[1:]:
@@ -73,16 +72,18 @@ def main():
             exit(1)
         plan = pr_obj.MCESearch()
     solutions = pr_obj.solutions
-    #for sol in solutions:
-     #   print(sol)
+
     explanation= ''
     # for item in solutions:
     #     explanation += "Explanation >> {}\n".format(item)
 
-    # print(explanation.strip())
+    # #print(explanation.strip())
     # with open('exp.dat', 'w') as explanation_file:
     #     explanation_file.write(explanation.strip())
-        # Convert all items to string
+
+    solutions = pr_obj.solutions
+
+    # Convert all items to string
     str_solutions = [str(item) for item in solutions]
 
     # Remove duplicates by converting to a set and back to a list
@@ -98,20 +99,25 @@ def main():
     with open('explanations.dat', 'w') as explanation_file:
         explanation_file.write(explanation.strip())
 
-
     changes = pr_obj.previous_difference
-
+    all_Original_Chnages= ''
+    for item in changes:
+        all_Original_Chnages += "Orig_changes >> {}\n".format(item)
+    with open('Orig_changes.dat', 'w') as explanation_file:
+        explanation_file.write(all_Original_Chnages.strip())
     # Convert all items to string
     str_changes = [str(item) for item in changes]
     # Remove duplicates by converting to a set and back to a list
     unique_str_changes = list(set(str_changes))
 
+    label = args.label
+    #changes_file_name = f"{label}_changes.dat"
     # Sort the list
     sorted_unique_str_changes = sorted(unique_str_changes)
     all_Chnages= ''
     for item in sorted_unique_str_changes:
         all_Chnages += "changes >> {}\n".format(item)
-    with open('changes.dat', 'w') as explanation_file:
+    with open(f"modified_changes_{label}.dat", 'w') as explanation_file: ##Change "modified" to "original" when running for modified.
         explanation_file.write(all_Chnages.strip())
 
     # for i, explanation in enumerate(solutions):
@@ -130,7 +136,13 @@ def main():
     for i, explanation in enumerate(solutions):
         new_domain_file_name = os.path.join(directory_name, f"modified_domain_{i + 1}.pddl")
         new_problem_file_name = os.path.join(directory_name, f"modified_problem_{i + 1}.pddl")
-        new_domain_file, new_problem_file = write_domain_file_from_state(explanation, '../domain/Network/domain_template.pddl', '../domain/Network/prob_template.pddl')
+
+        # For Original File 
+        # new_domain_file, new_problem_file = write_domain_file_from_state(explanation, '../domain/All_Network/Original_Network/AdminServer/domain_template.pddl', '../domain/All_Network/Original_Network/AdminServer/prob_template.pddl')
+        
+        # For Modified File 
+        new_domain_file, new_problem_file = write_domain_file_from_state(explanation, '../domain/All_Network/Modified_Network/AdminServer/domain_template.pddl', '../domain/All_Network/Modified_Network/AdminServer/prob_template.pddl')
+        
         os.rename(new_domain_file, new_domain_file_name)
         os.rename(new_problem_file, new_problem_file_name)
 
@@ -147,6 +159,7 @@ def main():
     execution_time = end_time - start_time
 
     print(f"Execution time: {execution_time} seconds")
+
 
 
 

@@ -1,2 +1,1 @@
-changes >> {'putdown-has-add-effect-clear ?x'}
-changes >> {'unstack-has-add-effect-holding ?x', 'putdown-has-add-effect-clear ?x'}
+changes >> {'has-initial-state-web-software microsoft-windows-8'}

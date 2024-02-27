@@ -152,7 +152,7 @@ def read_state_from_domain_file(domainFileName, problemFileName):
     #with open(problemFileName) as problem_file:
     #    problem_lines = problem_file.readlines()
     init_state = parse_problem(domainFileName, problemFileName, "init")
-    print ("init state",init_state)
+    #print ("init state",init_state)
     goal_state = parse_problem(domainFileName, problemFileName, "goal")
         #print init_state
         #print goal_state
